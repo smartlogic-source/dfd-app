@@ -465,6 +465,7 @@
       padding: 12px 16px calc(var(--safe-bot) + 12px);
       background: linear-gradient(0deg, var(--surface) 65%, transparent);
       z-index: 30;
+      box-sizing: border-box;
     }
 
     /* ===== TOAST / ALERT ===== */
@@ -783,11 +784,154 @@
       border-radius: 8px;
     }
 
-    /* ===== RESPONSIVE FINE-TUNING ===== */
-    @media (min-width: 430px) {
-      #app { box-shadow: var(--shadow-lg); }
-      body { background: #e8f0fa; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 0; }
+    /* ===================================================
+       RESPONSIVE — covers all real device sizes
+       =================================================== */
+
+    /* --- Base: fills full screen on any phone --- */
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
     }
+
+    #app {
+      width: 100%;
+      max-width: 100%;          /* full width on phones */
+      min-height: 100vh;
+      min-height: 100dvh;       /* accounts for browser chrome on mobile */
+    }
+
+    /* --- Tiny phones: 360px and below (older Androids, Galaxy A series) --- */
+    @media (max-width: 360px) {
+      :root {
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+      }
+      .hero { padding: calc(var(--safe-top) + 18px) 16px 24px; }
+      .hero-logo { font-size: 28px; }
+      .hero-title { font-size: 18px; }
+      .hero-brand { font-size: 10px; letter-spacing: 1px; }
+      .menu-grid { padding: 14px 12px; gap: 8px; }
+      .menu-card { padding: 14px 10px; }
+      .menu-card.featured { padding: 16px 14px; }
+      .card-icon { font-size: 22px; }
+      .card-label { font-size: 13px; }
+      .card-sub { font-size: 11px; }
+      .screen-body { padding: 14px 12px; padding-bottom: calc(var(--safe-bot) + 85px); }
+      .field-input, .field-select { padding: 11px 12px; font-size: 14px; }
+      .field-label { font-size: 12px; }
+      .btn { padding: 13px 16px; font-size: 15px; }
+      .cal-cell { height: 32px; font-size: 11px; border-radius: 8px; }
+      .cal-weekdays span { font-size: 10px; }
+      .stat-num { font-size: 22px; }
+      .login-title { font-size: 20px; }
+      .login-card { padding: 18px 14px; }
+      .top-nav { padding: calc(var(--safe-top) + 10px) 12px 10px; }
+      .nav-title { font-size: 13px; }
+      .summary-label { font-size: 12px; }
+      .summary-value { font-size: 13px; }
+    }
+
+    /* --- Small phones: 361px – 390px (iPhone SE, small Androids) --- */
+    @media (min-width: 361px) and (max-width: 390px) {
+      .hero { padding: calc(var(--safe-top) + 22px) 20px 28px; }
+      .hero-title { font-size: 20px; }
+      .menu-grid { padding: 16px 14px; gap: 10px; }
+      .screen-body { padding: 16px 14px; padding-bottom: calc(var(--safe-bot) + 88px); }
+      .cal-cell { height: 34px; font-size: 12px; }
+    }
+
+    /* --- Medium phones: 391px – 430px (iPhone 14, Pixel 7, Galaxy S23) --- */
+    @media (min-width: 391px) and (max-width: 430px) {
+      /* default styles already optimized for this range — no overrides needed */
+    }
+
+    /* --- Large phones: 431px – 480px (iPhone Plus, large Androids) --- */
+    @media (min-width: 431px) and (max-width: 480px) {
+      #app { max-width: 480px; margin: 0 auto; }
+      .hero-title { font-size: 24px; }
+      .menu-card { padding: 22px 16px; }
+      .card-icon { font-size: 30px; }
+      .card-label { font-size: 15px; }
+      .bottom-cta { max-width: 480px; }
+      .toast-wrap { max-width: 460px; }
+    }
+
+    /* --- Tablet / desktop: wider than 480px --- */
+    @media (min-width: 481px) {
+      body {
+        background: #dde8f5;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 0;
+      }
+      #app {
+        max-width: 430px;
+        min-height: 100vh;
+        box-shadow: var(--shadow-lg);
+      }
+      .bottom-cta { max-width: 430px; }
+      .toast-wrap { max-width: 410px; }
+    }
+
+    /* --- Tall phones: ensure content never gets cut off --- */
+    @media (min-height: 812px) {
+      .hero { padding: calc(var(--safe-top) + 36px) 24px 44px; }
+      .menu-grid { padding: 22px 16px; gap: 14px; }
+    }
+
+    /* --- Short phones: Galaxy A32, older iPhones (height < 668px) --- */
+    @media (max-height: 667px) {
+      .hero { padding: calc(var(--safe-top) + 16px) 20px 20px; }
+      .hero-logo { font-size: 26px; margin-bottom: 6px; }
+      .hero-title { font-size: 17px; margin-bottom: 4px; }
+      .hero-sub { font-size: 12px; }
+      .menu-grid { padding: 12px; gap: 8px; }
+      .menu-card { padding: 12px 10px; }
+      .menu-card.featured { padding: 14px 14px; }
+      .screen-body { padding: 12px 14px; padding-bottom: calc(var(--safe-bot) + 80px); }
+      .bottom-cta { padding: 10px 14px calc(var(--safe-bot) + 10px); }
+      .btn { padding: 12px 16px; font-size: 15px; }
+      .field { margin-bottom: 10px; }
+      .field-input, .field-select { padding: 10px 12px; }
+      .cal-cell { height: 30px; font-size: 11px; }
+      .login-wrap { padding: 20px 16px; }
+      .login-logo { font-size: 36px; margin-bottom: 6px; }
+      .success-wrap { padding: 20px 16px; }
+      .success-icon { width: 64px; height: 64px; font-size: 28px; margin-bottom: 14px; }
+    }
+
+    /* --- iOS notch / Dynamic Island safe area --- */
+    @supports (padding-top: env(safe-area-inset-top)) {
+      .top-nav {
+        padding-top: calc(env(safe-area-inset-top) + 14px);
+      }
+      .hero {
+        padding-top: calc(env(safe-area-inset-top) + 28px);
+      }
+      .bottom-cta {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
+      }
+    }
+
+    /* --- Landscape mode on phones --- */
+    @media (orientation: landscape) and (max-height: 500px) {
+      .hero { padding: 10px 20px 14px; }
+      .hero-logo { display: none; }
+      .hero-title { font-size: 16px; margin-bottom: 2px; }
+      .hero-sub { display: none; }
+      .menu-grid { padding: 10px 14px; gap: 8px; }
+      .menu-card { padding: 10px 12px; }
+      .screen-body { padding: 10px 14px; padding-bottom: calc(var(--safe-bot) + 70px); }
+      .login-wrap { padding: 12px 16px; justify-content: flex-start; }
+      .login-logo { display: none; }
+      .cal-cell { height: 28px; font-size: 10px; }
+    }
+
   </style>
 </head>
 <body>
