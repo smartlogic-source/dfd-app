@@ -1258,22 +1258,11 @@
 <!-- ===== SERVICE WORKER REGISTRATION ===== -->
 <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      // Inline SW for offline caching
-      const swCode = `
-        const CACHE = 'dfd-pwa-v1';
-        self.addEventListener('install', e => {
-          e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
-          self.skipWaiting();
-        });
-        self.addEventListener('fetch', e => {
-          e.respondWith(
-            caches.match(e.request).then(r => r || fetch(e.request))
-          );
-        });
-      `;
-      const blob = new Blob([swCode], {type:'application/javascript'});
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+    window.addEventListener('load', async () => {
+      try {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(reg => reg.unregister()));
+      } catch (e) {}
     });
   }
 </script>
@@ -1572,12 +1561,22 @@ function goHome() { showScreen('screenHome'); }
 
 function goToBooking() {
   showScreen('screenBook1');
-  loadLeadersInto('bk_leader', () => {});
+  loadLeadersInto('bk_leader', () => {})
+    .catch((e) => {
+      const msg = e && e.message ? e.message : 'Failed to load supervisors.';
+      setMsg('bk_step1_msg', msg, 'error');
+      toast(msg, 'error');
+    });
 }
 
 function goToMyReservations() {
   showScreen('screenMyResLogin');
-  loadLeadersInto('mr_leader', () => {});
+  loadLeadersInto('mr_leader', () => {})
+    .catch((e) => {
+      const msg = e && e.message ? e.message : 'Failed to load supervisors.';
+      setMsg('mr_login_msg', msg, 'error');
+      toast(msg, 'error');
+    });
 }
 
 function goToAdmin() {
@@ -1585,7 +1584,12 @@ function goToAdmin() {
     showScreen('screenAdminDash');
   } else {
     showScreen('screenAdminLogin');
-    loadLeadersInto('adm_leaderId', () => {});
+    loadLeadersInto('adm_leaderId', () => {})
+      .catch((e) => {
+        const msg = e && e.message ? e.message : 'Failed to load supervisors.';
+        setMsg('adm_login_msg', msg, 'error');
+        toast(msg, 'error');
+      });
   }
 }
 
@@ -1598,11 +1602,12 @@ function goToAdmin() {
 function gasCall(action, params = {}) {
   return new Promise((resolve, reject) => {
     const cbName = '_cb_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+    const reqId = Date.now().toString();
 
     const timer = setTimeout(() => {
       cleanup();
       reject(new Error('Request timed out. Check your GAS URL.'));
-    }, 15000);
+    }, 30000);
 
     function cleanup() {
       clearTimeout(timer);
@@ -1613,7 +1618,7 @@ function gasCall(action, params = {}) {
 
     window[cbName] = function(data) { cleanup(); resolve(data); };
 
-    const qs = new URLSearchParams({ api: '1', action, callback: cbName, ...params });
+    const qs = new URLSearchParams({ api: '1', action, callback: cbName, _v: reqId, ...params });
     const s = document.createElement('script');
     s.id = cbName;
     s.src = GAS_URL + '?' + qs.toString();
@@ -1668,6 +1673,21 @@ async function ensureLeaders() {
     if (Array.isArray(data)) state.leaders = data;
     else if (data.ok === false) throw new Error(data.message);
     else state.leaders = data;
+    try {
+      localStorage.setItem('dfd_leaders_cache', JSON.stringify(state.leaders));
+    } catch (e) {}
+  } catch (e) {
+    try {
+      const cached = localStorage.getItem('dfd_leaders_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length) {
+          state.leaders = parsed;
+          return state.leaders;
+        }
+      }
+    } catch (cacheErr) {}
+    throw e;
   } finally { hideLoader(); }
   return state.leaders;
 }
