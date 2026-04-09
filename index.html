@@ -571,6 +571,7 @@
     }
     .res-badge.confirmed { background: var(--success-bg); color: var(--success); }
     .res-badge.upcoming  { background: var(--info-bg);    color: var(--info); }
+    .res-badge.past      { background: var(--warn-bg);    color: var(--warn); }
     .res-badge.pending   { background: var(--warn-bg);    color: var(--warn); }
     .res-badge.cancelled { background: var(--danger-bg);  color: var(--danger); }
 
@@ -1322,13 +1323,13 @@ const TRANSLATIONS = {
     myres_title:'حجوزاتي', myres_sub:'أدخل رقم الموظف أو بريدك الإلكتروني للبحث عن حجوزاتك',
     resDetail:'تفاصيل الحجز', moreDetails:'تفاصيل ›',
     total:'إجمالي الحجوزات', active:'الحجوزات النشطة',
-    totalRes:'إجمالي الحجوزات', upcomingRes:'قادمة', cancelledRes:'ملغاة',
+    totalRes:'إجمالي الحجوزات', upcomingRes:'قادمة', cancelledRes:'ملغاة', pastRes:'سابقة',
     lbl_total:'إجمالي الحجوزات', lbl_active:'الحجوزات النشطة',
     stat_total:'إجمالي الحجوزات', stat_confirmed:'مؤكدة', stat_cancelled:'ملغاة', stat_system:'حالة النظام',
     sysStatus:'حالة النظام',
     noRes:'لا توجد حجوزات', noResSub:'لم يتم العثور على حجوزات بالبيانات المدخلة.',
     empty_title:'لا توجد حجوزات', empty_sub:'لم يتم العثور على حجوزات بالبيانات المدخلة.',
-    upcoming:'قادم', cancelled:'ملغي', status_confirmed:'مؤكد', status_cancelled:'ملغي',
+    upcoming:'قادم', cancelled:'ملغي', past:'منتهي', status_confirmed:'مؤكد', status_cancelled:'ملغي',
     cancelBtn:'❌ إلغاء هذا الحجز', btn_cancel_res:'❌ إلغاء هذا الحجز',
     alreadyCancelled:'هذا الحجز ملغي بالفعل.', already_cancelled:'هذا الحجز ملغي بالفعل.',
     confirmCancel:'هل أنت متأكد من إلغاء هذا الحجز؟', confirm_cancel:'هل أنت متأكد من إلغاء هذا الحجز؟',
@@ -1411,13 +1412,13 @@ const TRANSLATIONS = {
     myres_title:'My Reservations', myres_sub:'Enter your employee ID or email to search your bookings',
     resDetail:'Booking Details', moreDetails:'Details ›',
     total:'Total Bookings', active:'Active Bookings',
-    totalRes:'Total Bookings', upcomingRes:'Confirmed', cancelledRes:'Cancelled',
+    totalRes:'Total Bookings', upcomingRes:'Confirmed', cancelledRes:'Cancelled', pastRes:'Past',
     lbl_total:'Total Bookings', lbl_active:'Active Bookings',
     stat_total:'Total Bookings', stat_confirmed:'Confirmed', stat_cancelled:'Cancelled', stat_system:'System Status',
     sysStatus:'System Status',
     noRes:'No Reservations', noResSub:'No bookings found with the provided details.',
     empty_title:'No Reservations', empty_sub:'No bookings found with the provided details.',
-    upcoming:'Confirmed', cancelled:'Cancelled', status_confirmed:'Confirmed', status_cancelled:'Cancelled',
+    upcoming:'Confirmed', cancelled:'Cancelled', past:'Past', status_confirmed:'Confirmed', status_cancelled:'Cancelled',
     cancelBtn:'❌ Cancel This Booking', btn_cancel_res:'❌ Cancel This Booking',
     alreadyCancelled:'This booking is already cancelled.', already_cancelled:'This booking is already cancelled.',
     confirmCancel:'Are you sure you want to cancel this booking?', confirm_cancel:'Are you sure you want to cancel this booking?',
@@ -1602,7 +1603,6 @@ function goToAdmin() {
 function gasCall(action, params = {}) {
   return new Promise((resolve, reject) => {
     const cbName = '_cb_' + Date.now() + '_' + Math.floor(Math.random()*9999);
-    const reqId = Date.now().toString();
 
     const timer = setTimeout(() => {
       cleanup();
@@ -1618,7 +1618,7 @@ function gasCall(action, params = {}) {
 
     window[cbName] = function(data) { cleanup(); resolve(data); };
 
-    const qs = new URLSearchParams({ api: '1', action, callback: cbName, _v: reqId, ...params });
+    const qs = new URLSearchParams({ api: '1', action, callback: cbName, ...params });
     const s = document.createElement('script');
     s.id = cbName;
     s.src = GAS_URL + '?' + qs.toString();
@@ -2014,7 +2014,8 @@ function renderMyReservations() {
     `;
     return;
   }
-  const upcomingCount = state.myRes.filter(r => !isCancelled(r)).length;
+  const upcomingCount = state.myRes.filter(r => !isCancelled(r) && !isPast(r)).length;
+  const pastCount = state.myRes.filter(r => isPast(r)).length;
   body.innerHTML = `
     <div style="margin-bottom:16px">
       <div class="stats-row">
@@ -2025,6 +2026,12 @@ function renderMyReservations() {
         <div class="stat-card">
           <div class="stat-num">${upcomingCount}</div>
           <div class="stat-lbl">${t('active')}</div>
+        </div>
+      </div>
+      <div class="stats-row" style="margin-top:-6px">
+        <div class="stat-card">
+          <div class="stat-num">${pastCount}</div>
+          <div class="stat-lbl">${t('pastRes')}</div>
         </div>
       </div>
     </div>
@@ -2038,6 +2045,11 @@ function isCancelled(r) {
   return s === 'cancelled' || s === 'ملغي' || s === 'true';
 }
 
+function isPast(r) {
+  const s = String(r.status || '').toLowerCase();
+  return s === 'past' || s === 'منتهي';
+}
+
 function isUpcoming(r) {
   const s = String(r.status || '').toLowerCase();
   return s === 'upcoming' || s === '' || s === 'قادم';
@@ -2045,8 +2057,9 @@ function isUpcoming(r) {
 
 function buildResCard(r, i) {
   const cancelled = isCancelled(r);
-  const statusClass = cancelled ? 'cancelled' : 'upcoming';
-  const statusLabel = cancelled ? t('cancelled') : t('upcoming');
+  const past = isPast(r);
+  const statusClass = cancelled ? 'cancelled' : (past ? 'past' : 'upcoming');
+  const statusLabel = cancelled ? t('cancelled') : (past ? t('past') : t('upcoming'));
   const date   = r.date || r.Date || r.dateStr || '';
   const time   = r.time || r.Time || r.slotLabel || r.timeText || '';
   const branch = r.branch || r.Branch || r.branch_code || '';
@@ -2071,6 +2084,7 @@ function showResDetail(i) {
   state.currentRes = state.myRes[i];
   const r = state.currentRes;
   const cancelled = isCancelled(r);
+  const past = isPast(r);
 
   const labelMap = {
     name: t('fieldName'), email: t('fieldEmail'), date: t('fieldDate'), time: t('fieldTime'),
@@ -2085,7 +2099,7 @@ function showResDetail(i) {
       const lbl = labelMap[k] || k;
       let val = v == null ? '—' : String(v);
       if (k === 'date') val = formatDate(val);
-      if (k === 'status') val = isCancelled(r) ? t('cancelled') : t('upcoming');
+      if (k === 'status') val = cancelled ? t('cancelled') : (past ? t('past') : t('upcoming'));
       return `<div class="summary-row"><span class="summary-label">${lbl}</span><span class="summary-value">${val}</span></div>`;
     }).join('');
 
