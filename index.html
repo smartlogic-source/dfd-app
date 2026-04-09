@@ -570,8 +570,11 @@
       flex-shrink: 0;
     }
     .res-badge.confirmed { background: var(--success-bg); color: var(--success); }
+    .res-badge.upcoming  { background: var(--info-bg);    color: var(--info); }
     .res-badge.pending   { background: var(--warn-bg);    color: var(--warn); }
     .res-badge.cancelled { background: var(--danger-bg);  color: var(--danger); }
+
+    /* lang-switch styles moved to LANGUAGE TOGGLE section */
     .res-meta { display: flex; flex-direction: column; gap: 4px; }
     .res-meta-row {
       display: flex;
@@ -759,6 +762,25 @@
       color: var(--muted);
       border: 1px solid var(--border);
     }
+
+    /* ===== LANGUAGE TOGGLE (home screen only) ===== */
+    #homeLangBtn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1.5px solid rgba(255,255,255,.28);
+      border-radius: 20px;
+      padding: 5px 12px 5px 8px;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: .3px;
+      backdrop-filter: blur(4px);
+      transition: background .2s;
+    }
+    #homeLangBtn:active { background: rgba(255,255,255,.26); }
+    #homeLangFlag { font-size: 15px; line-height: 1; }
 
     /* ===== FOOTER ===== */
     .app-footer {
@@ -952,43 +974,50 @@
   <!-- ============================================================ -->
   <div class="screen active" id="screenHome">
     <div class="hero">
+      <!-- Language toggle — home screen only, applies to whole app -->
+      <div id="langBtnWrap" style="position:absolute;top:calc(var(--safe-top) + 12px);left:16px;z-index:10;">
+        <button id="homeLangBtn" onclick="toggleLang()">
+          <span id="homeLangFlag">🌐</span>
+          <span id="homeLangLabel">EN</span>
+        </button>
+      </div>
       <div class="hero-logo">📅</div>
       <div class="hero-brand">Day For Development · شركة الدواء</div>
-      <div class="hero-title">نظام حجز المواعيد</div>
-      <div class="hero-sub">احجز موعدك بسهولة وسرعة من هاتفك</div>
+      <div class="hero-title" data-i18n="home_title">نظام حجز المواعيد</div>
+      <div class="hero-sub" data-i18n="home_sub">احجز موعدك بسهولة وسرعة من هاتفك</div>
     </div>
 
     <div class="menu-grid">
       <div class="menu-card featured" onclick="goToBooking()">
         <div class="card-icon">🗓️</div>
         <div class="card-text">
-          <div class="card-label">احجز موعد جديد</div>
-          <div class="card-sub">اختر المشرف والفرع والوقت</div>
+          <div class="card-label" data-i18n="home_book_label">احجز موعد جديد</div>
+          <div class="card-sub" data-i18n="home_book_sub">اختر المشرف والفرع والوقت</div>
         </div>
-        <div style="margin-right:auto;color:rgba(255,255,255,.5);font-size:20px;">‹</div>
+        <div style="margin-right:auto;color:rgba(255,255,255,.5);font-size:20px;" class="arrow-icon">‹</div>
       </div>
 
       <div class="menu-card" onclick="goToMyReservations()">
         <div class="card-icon">📋</div>
-        <div class="card-label">حجوزاتي</div>
-        <div class="card-sub">عرض وإدارة مواعيدك</div>
+        <div class="card-label" data-i18n="home_myres_label">حجوزاتي</div>
+        <div class="card-sub" data-i18n="home_myres_sub">عرض وإدارة مواعيدك</div>
       </div>
 
       <div class="menu-card" onclick="goToAdmin()">
         <div class="card-icon">⚙️</div>
-        <div class="card-label">لوحة الإدارة</div>
-        <div class="card-sub">للمشرفين والقادة</div>
+        <div class="card-label" data-i18n="home_admin_label">لوحة الإدارة</div>
+        <div class="card-sub" data-i18n="home_admin_sub">للمشرفين والقادة</div>
       </div>
     </div>
 
     <div style="padding: 0 16px 20px;">
       <div class="alert info">
         <div class="alert-icon">ℹ️</div>
-        <div>تأكد من إدخال بريدك الإلكتروني الصحيح لاستقبال تأكيد الحجز.</div>
+        <div data-i18n="home_alert">تأكد من إدخال بريدك الإلكتروني الصحيح لاستقبال تأكيد الحجز.</div>
       </div>
     </div>
 
-    <div class="app-footer">© شركة الدواء للخدمات الطبية · DFD Reservations</div>
+    <div class="app-footer" data-i18n="footer">© شركة الدواء للخدمات الطبية · DFD Reservations</div>
   </div>
 
   <!-- ============================================================ -->
@@ -997,287 +1026,231 @@
   <div class="screen" id="screenBook1">
     <div class="top-nav">
       <button class="nav-back" onclick="goHome()">‹</button>
-      <div class="nav-title">حجز موعد جديد</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="book_title">حجز موعد جديد</div>
     </div>
     <div class="screen-body">
-      <!-- Steps -->
       <div class="steps">
         <div class="step-dot active" id="step1dot1"></div>
         <div class="step-dot" id="step1dot2"></div>
         <div class="step-dot" id="step1dot3"></div>
-        <div class="step-label" style="font-size:12px;color:var(--muted);font-weight:700;margin-right:6px">الخطوة 1 من 3</div>
+        <div class="step-label" style="font-size:12px;color:var(--muted);font-weight:700;margin-right:6px" data-i18n="step1of3">الخطوة 1 من 3</div>
       </div>
-
       <div class="field">
-        <label class="field-label">👤 المشرف</label>
+        <label class="field-label" data-i18n="label_leader">👤 المشرف</label>
         <div class="field-select-wrap">
           <select class="field-select" id="bk_leader" onchange="onBookLeaderChange()">
-            <option value="">اختر المشرف...</option>
+            <option value="" data-i18n-opt="select_leader">اختر المشرف...</option>
           </select>
         </div>
       </div>
-
       <div class="field">
-        <label class="field-label">🏢 الفرع</label>
+        <label class="field-label" data-i18n="label_branch">🏢 الفرع</label>
         <div class="field-select-wrap">
           <select class="field-select" id="bk_branch" disabled onchange="onBookBranchChange()">
-            <option value="">اختر الفرع أولاً...</option>
+            <option value="" data-i18n-opt="select_branch_first">اختر الفرع أولاً...</option>
           </select>
         </div>
       </div>
-
       <div class="divider"></div>
-
       <div class="field">
-        <label class="field-label">👤 الاسم الكامل</label>
-        <input class="field-input" type="text" id="bk_name" placeholder="اكتب اسمك الكامل" />
+        <label class="field-label" data-i18n="label_fullname">👤 الاسم الكامل</label>
+        <input class="field-input" type="text" id="bk_name" data-i18n-ph="ph_fullname" placeholder="اكتب اسمك الكامل" />
       </div>
       <div class="field">
-        <label class="field-label">✉️ البريد الإلكتروني</label>
+        <label class="field-label" data-i18n="label_email">✉️ البريد الإلكتروني</label>
         <input class="field-input" type="email" id="bk_email" placeholder="example@company.com" dir="ltr" />
       </div>
       <div class="field">
-        <label class="field-label">🔢 رقم الموظف</label>
-        <input class="field-input" type="text" inputmode="numeric" id="bk_empid" placeholder="أدخل رقم الموظف" />
+        <label class="field-label" data-i18n="label_empid">🔢 رقم الموظف</label>
+        <input class="field-input" type="text" inputmode="numeric" id="bk_empid" data-i18n-ph="ph_empid" placeholder="أدخل رقم الموظف" />
       </div>
-
       <div id="bk_step1_msg"></div>
     </div>
     <div class="bottom-cta">
-      <button class="btn btn-primary" id="bk_next1btn" onclick="goBookStep2()">التالي — اختيار الموعد ›</button>
+      <button class="btn btn-primary" id="bk_next1btn" onclick="goBookStep2()" data-i18n="btn_next_step2">التالي — اختيار الموعد ›</button>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: BOOKING (Step 2 – Pick date & time)                   -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenBook2">
     <div class="top-nav">
       <button class="nav-back" onclick="showScreen('screenBook1')">‹</button>
-      <div class="nav-title">اختر الموعد</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="book2_title">اختر الموعد</div>
     </div>
     <div class="screen-body">
       <div class="steps">
         <div class="step-dot done"></div>
         <div class="step-dot active"></div>
         <div class="step-dot"></div>
-        <div class="step-label" style="font-size:12px;color:var(--muted);font-weight:700;margin-right:6px">الخطوة 2 من 3</div>
+        <div class="step-label" style="font-size:12px;color:var(--muted);font-weight:700;margin-right:6px" data-i18n="step2of3">الخطوة 2 من 3</div>
       </div>
-
       <div class="cal-wrap" id="bk_cal">
         <div class="cal-header">
           <button class="cal-btn" id="calPrev" onclick="calPrev()">›</button>
           <div class="cal-title" id="calTitle">—</div>
           <button class="cal-btn" id="calNext" onclick="calNext()">‹</button>
         </div>
-        <div class="cal-weekdays">
+        <div class="cal-weekdays" id="calWeekdays">
           <span>س</span><span>ح</span><span>ن</span><span>ث</span><span>ر</span><span>خ</span><span>ج</span>
         </div>
         <div class="cal-grid" id="calGrid"></div>
-        <div class="cal-hint" id="calHint">اختر يوماً متاحاً لإظهار الأوقات</div>
+        <div class="cal-hint" id="calHint" data-i18n="cal_hint">اختر يوماً متاحاً لإظهار الأوقات</div>
       </div>
-
       <div class="field">
-        <label class="field-label">🕐 الوقت</label>
+        <label class="field-label" data-i18n="label_time">🕐 الوقت</label>
         <div class="field-select-wrap">
           <select class="field-select" id="bk_time" disabled>
-            <option value="">اختر الوقت...</option>
+            <option value="" data-i18n-opt="select_time">اختر الوقت...</option>
           </select>
         </div>
       </div>
-
       <div id="bk_step2_msg"></div>
     </div>
     <div class="bottom-cta">
-      <button class="btn btn-primary" onclick="goBookStep3()">التالي — مراجعة وتأكيد ›</button>
+      <button class="btn btn-primary" onclick="goBookStep3()" data-i18n="btn_next_step3">التالي — مراجعة وتأكيد ›</button>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: BOOKING (Step 3 – Confirm)                            -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenBook3">
     <div class="top-nav">
       <button class="nav-back" onclick="showScreen('screenBook2')">‹</button>
-      <div class="nav-title">تأكيد الحجز</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="book3_title">تأكيد الحجز</div>
     </div>
     <div class="screen-body">
       <div class="steps">
         <div class="step-dot done"></div>
         <div class="step-dot done"></div>
         <div class="step-dot active"></div>
-        <div class="step-label" style="font-size:12px;color:var(--muted);font-weight:700;margin-right:6px">الخطوة 3 من 3</div>
+        <div class="step-label" style="font-size:12px;color:var(--muted);font-weight:700;margin-right:6px" data-i18n="step3of3">الخطوة 3 من 3</div>
       </div>
-
       <div class="alert info" style="margin-bottom:16px">
         <div class="alert-icon">👀</div>
-        <div>راجع تفاصيل حجزك قبل التأكيد</div>
+        <div data-i18n="book3_review">راجع تفاصيل حجزك قبل التأكيد</div>
       </div>
-
       <div class="admin-section">
-        <div class="admin-section-head">📝 تفاصيل الحجز</div>
+        <div class="admin-section-head" data-i18n="booking_details">📝 تفاصيل الحجز</div>
         <div class="admin-section-body" id="bk_summary"></div>
       </div>
-
       <div id="bk_step3_msg"></div>
     </div>
     <div class="bottom-cta">
-      <button class="btn btn-primary" id="bk_confirmBtn" onclick="submitBooking()">✅ تأكيد الحجز</button>
+      <button class="btn btn-primary" id="bk_confirmBtn" onclick="submitBooking()" data-i18n="btn_confirm">✅ تأكيد الحجز</button>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: BOOKING SUCCESS                                       -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenBookSuccess">
     <div class="top-nav">
       <button class="nav-back" onclick="goHome()">‹</button>
-      <div class="nav-title">تم الحجز</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="success_nav">تم الحجز</div>
     </div>
     <div class="success-wrap">
       <div class="success-icon">✅</div>
-      <div class="success-title">تم تأكيد حجزك!</div>
-      <div class="success-sub" id="bk_success_msg">سيصلك بريد إلكتروني بتفاصيل الحجز.</div>
-      <button class="btn btn-blue" onclick="goHome()" style="max-width:280px">العودة للرئيسية</button>
+      <div class="success-title" data-i18n="success_title">تم تأكيد حجزك!</div>
+      <div class="success-sub" id="bk_success_msg" data-i18n="success_sub">سيصلك بريد إلكتروني بتفاصيل الحجز.</div>
+      <button class="btn btn-blue" onclick="goHome()" style="max-width:280px" data-i18n="btn_home">العودة للرئيسية</button>
       <div style="height:12px"></div>
-      <button class="btn btn-ghost btn-sm" onclick="goToBooking()" style="max-width:280px">حجز موعد آخر</button>
+      <button class="btn btn-ghost btn-sm" onclick="goToBooking()" style="max-width:280px" data-i18n="btn_book_another">حجز موعد آخر</button>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: MY RESERVATIONS (Login)                               -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenMyResLogin">
     <div class="top-nav">
       <button class="nav-back" onclick="goHome()">‹</button>
-      <div class="nav-title">حجوزاتي</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="myres_nav">حجوزاتي</div>
     </div>
     <div class="login-wrap">
       <div class="login-logo">📋</div>
-      <div class="login-title">حجوزاتي</div>
-      <div class="login-sub">أدخل رقم الموظف أو بريدك الإلكتروني للبحث عن حجوزاتك</div>
+      <div class="login-title" data-i18n="myres_title">حجوزاتي</div>
+      <div class="login-sub" data-i18n="myres_sub">أدخل رقم الموظف أو بريدك الإلكتروني للبحث عن حجوزاتك</div>
       <div class="login-card">
         <div class="field">
-          <label class="field-label">🔢 رقم الموظف</label>
-          <input class="field-input" type="text" inputmode="numeric" id="mr_empid" placeholder="أدخل رقم الموظف" />
+          <label class="field-label" data-i18n="label_empid">🔢 رقم الموظف</label>
+          <input class="field-input" type="text" inputmode="numeric" id="mr_empid" data-i18n-ph="ph_empid" placeholder="أدخل رقم الموظف" />
         </div>
-        <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:12px">أو</div>
+        <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:12px" data-i18n="or_text">أو</div>
         <div class="field">
-          <label class="field-label">✉️ البريد الإلكتروني</label>
+          <label class="field-label" data-i18n="label_email">✉️ البريد الإلكتروني</label>
           <input class="field-input" type="email" id="mr_email" placeholder="example@company.com" dir="ltr" />
         </div>
         <div class="field">
-          <label class="field-label">👤 المشرف</label>
+          <label class="field-label" data-i18n="label_leader">👤 المشرف</label>
           <div class="field-select-wrap">
             <select class="field-select" id="mr_leader">
-              <option value="">اختر المشرف...</option>
+              <option value="" data-i18n-opt="select_leader">اختر المشرف...</option>
             </select>
           </div>
         </div>
         <div id="mr_login_msg"></div>
-        <button class="btn btn-primary" style="margin-top:8px" onclick="searchMyReservations()">🔍 بحث عن حجوزاتي</button>
+        <button class="btn btn-primary" style="margin-top:8px" onclick="searchMyReservations()" data-i18n="btn_search">🔍 بحث عن حجوزاتي</button>
       </div>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: MY RESERVATIONS (List)                                -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenMyRes">
     <div class="top-nav">
       <button class="nav-back" onclick="showScreen('screenMyResLogin')">‹</button>
-      <div class="nav-title">حجوزاتي</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="myres_nav">حجوزاتي</div>
     </div>
-    <div class="screen-body" id="myResBody">
-      <!-- Populated dynamically -->
-    </div>
+    <div class="screen-body" id="myResBody"></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: RESERVATION DETAIL                                    -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenResDetail">
     <div class="top-nav">
       <button class="nav-back" onclick="showScreen('screenMyRes')">‹</button>
-      <div class="nav-title">تفاصيل الحجز</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="resdetail_nav">تفاصيل الحجز</div>
     </div>
-    <div class="screen-body" id="resDetailBody">
-      <!-- Populated dynamically -->
-    </div>
+    <div class="screen-body" id="resDetailBody"></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: ADMIN LOGIN                                           -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenAdminLogin">
     <div class="top-nav">
       <button class="nav-back" onclick="goHome()">‹</button>
-      <div class="nav-title">لوحة الإدارة</div>
-      <div style="width:36px"></div>
+      <div class="nav-title" data-i18n="admin_nav">لوحة الإدارة</div>
     </div>
     <div class="login-wrap">
       <div class="login-logo">⚙️</div>
-      <div class="login-title">تسجيل الدخول</div>
-      <div class="login-sub">للمشرفين والقادة فقط</div>
+      <div class="login-title" data-i18n="admin_title">تسجيل الدخول</div>
+      <div class="login-sub" data-i18n="admin_sub">للمشرفين والقادة فقط</div>
       <div class="login-card">
         <div class="tabs-row">
-          <button class="tab-btn active" id="tabLeader" onclick="switchAdminTab('leader')">مشرف / قائد</button>
-          <button class="tab-btn" id="tabSenior" onclick="switchAdminTab('senior')">مدير (Senior)</button>
+          <button class="tab-btn active" id="tabLeader" onclick="switchAdminTab('leader')" data-i18n="tab_leader">مشرف / قائد</button>
+          <button class="tab-btn" id="tabSenior" onclick="switchAdminTab('senior')" data-i18n="tab_senior">مدير (Senior)</button>
         </div>
-
-        <!-- Leader login -->
         <div id="adminLoginLeader">
           <div class="field">
-            <label class="field-label">🆔 معرّف المشرف</label>
+            <label class="field-label" data-i18n="label_leader_id">🆔 معرّف المشرف</label>
             <div class="field-select-wrap">
               <select class="field-select" id="adm_leaderId">
-                <option value="">اختر المشرف...</option>
+                <option value="" data-i18n-opt="select_leader">اختر المشرف...</option>
               </select>
             </div>
           </div>
           <div class="field">
-            <label class="field-label">🔒 كلمة المرور</label>
+            <label class="field-label" data-i18n="label_password">🔒 كلمة المرور</label>
             <input class="field-input" type="password" id="adm_pass" placeholder="••••••••" dir="ltr" />
           </div>
         </div>
-
-        <!-- Senior login -->
         <div id="adminLoginSenior" style="display:none">
           <div class="field">
-            <label class="field-label">✉️ البريد الإلكتروني</label>
+            <label class="field-label" data-i18n="label_email">✉️ البريد الإلكتروني</label>
             <input class="field-input" type="email" id="adm_seniorEmail" placeholder="senior@company.com" dir="ltr" />
           </div>
           <div class="field">
-            <label class="field-label">🔒 كلمة المرور</label>
+            <label class="field-label" data-i18n="label_password">🔒 كلمة المرور</label>
             <input class="field-input" type="password" id="adm_seniorPass" placeholder="••••••••" dir="ltr" />
           </div>
         </div>
-
         <div id="adm_login_msg"></div>
-        <button class="btn btn-blue" style="margin-top:8px" onclick="doAdminLogin()">تسجيل الدخول ←</button>
+        <button class="btn btn-blue" style="margin-top:8px" onclick="doAdminLogin()" data-i18n="btn_login">تسجيل الدخول ←</button>
       </div>
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: ADMIN DASHBOARD                                       -->
-  <!-- ============================================================ -->
   <div class="screen" id="screenAdminDash">
     <div class="top-nav">
       <button class="nav-back" onclick="adminLogout()">‹</button>
-      <div class="nav-title" id="adminDashTitle">لوحة الإدارة</div>
-      <button class="nav-action" onclick="adminRefresh()" title="تحديث">↻</button>
+      <div class="nav-title" id="adminDashTitle" data-i18n="admin_nav">لوحة الإدارة</div>
     </div>
-    <div class="screen-body" id="adminDashBody">
-      <!-- Populated dynamically -->
-    </div>
+    <div class="screen-body" id="adminDashBody"></div>
   </div>
 
 </div><!-- /#app -->
@@ -1310,6 +1283,256 @@
    CONFIG — SET YOUR APPS SCRIPT WEB APP URL HERE
    ================================================================ */
 const GAS_URL = "https://script.google.com/macros/s/AKfycby1hGHcqpLB-z-XJ39YAXzSlD9cGE5ZQ7mal-WrSn4oGy6cOpSu5ZNWb7WYJzFy5NI/exec";
+
+/* ================================================================
+   i18n — FULL BILINGUAL ENGINE (Arabic ↔ English)
+   ================================================================ */
+const TRANSLATIONS = {
+  ar: {
+    // Home
+    home_title:'نظام حجز المواعيد', home_sub:'احجز موعدك بسهولة وسرعة من هاتفك',
+    home_book_label:'احجز موعد جديد', home_book_sub:'اختر المشرف والفرع والوقت',
+    home_myres_label:'حجوزاتي', home_myres_sub:'عرض وإدارة مواعيدك',
+    home_admin_label:'لوحة الإدارة', home_admin_sub:'للمشرفين والقادة',
+    home_alert:'تأكد من إدخال بريدك الإلكتروني الصحيح لاستقبال تأكيد الحجز.',
+    footer:'© شركة الدواء للخدمات الطبية · DFD Reservations',
+    // Nav titles
+    book_title:'حجز موعد جديد', book2_title:'اختر الموعد', book3_title:'تأكيد الحجز',
+    success_nav:'تم الحجز', myres_nav:'حجوزاتي', resdetail_nav:'تفاصيل الحجز',
+    admin_nav:'لوحة الإدارة', adminPanel:'لوحة الإدارة',
+    // Steps
+    step1of3:'الخطوة 1 من 3', step2of3:'الخطوة 2 من 3', step3of3:'الخطوة 3 من 3',
+    // Field labels
+    label_leader:'👤 المشرف', label_branch:'🏢 الفرع', label_fullname:'👤 الاسم الكامل',
+    label_email:'✉️ البريد الإلكتروني', label_empid:'🔢 رقم الموظف', label_time:'🕐 الوقت',
+    label_leader_id:'🆔 معرّف المشرف', label_password:'🔒 كلمة المرور',
+    supervisor:'المشرف', branch:'الفرع', fullName:'الاسم الكامل',
+    email:'البريد الإلكتروني', empId:'رقم الموظف', time:'الوقت', date:'التاريخ',
+    // Placeholders
+    ph_fullname:'اكتب اسمك الكامل', ph_empid:'أدخل رقم الموظف',
+    // Select options
+    select_leader:'اختر المشرف...', selectSupervisor:'اختر المشرف...',
+    select_branch_first:'اختر الفرع أولاً...', selectBranch:'اختر الفرع أولاً...',
+    select_time:'اختر الوقت...', selectTime:'اختر الوقت...',
+    // Buttons
+    btn_next_step2:'التالي — اختيار الموعد ›', btn_next_step3:'التالي — مراجعة وتأكيد ›',
+    btn_confirm:'✅ تأكيد الحجز', btn_home:'العودة للرئيسية', btn_book_another:'حجز موعد آخر',
+    btn_search:'🔍 بحث عن حجوزاتي', btn_login:'تسجيل الدخول ←', btn_new_booking:'احجز موعد جديد',
+    bookNew:'احجز موعد جديد',
+    // Booking flow
+    book3_review:'راجع تفاصيل حجزك قبل التأكيد', booking_details:'📝 تفاصيل الحجز',
+    cal_hint:'اختر يوماً متاحاً لإظهار الأوقات', or_text:'أو',
+    success_title:'تم تأكيد حجزك!', success_sub:'سيصلك بريد إلكتروني بتفاصيل الحجز.',
+    bookingDoneSub:'سيصلك بريد إلكتروني بتفاصيل الحجز.',
+    sending:'جارٍ إرسال الحجز...',
+    // Calendar
+    cal_weekdays:['س','ح','ن','ث','ر','خ','ج'],
+    months:['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+    days:['الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعة','السبت'],
+    // My Reservations
+    myres_title:'حجوزاتي', myres_sub:'أدخل رقم الموظف أو بريدك الإلكتروني للبحث عن حجوزاتك',
+    resDetail:'تفاصيل الحجز', moreDetails:'تفاصيل ›',
+    total:'إجمالي الحجوزات', active:'الحجوزات النشطة',
+    totalRes:'إجمالي الحجوزات', upcomingRes:'قادمة', cancelledRes:'ملغاة',
+    lbl_total:'إجمالي الحجوزات', lbl_active:'الحجوزات النشطة',
+    stat_total:'إجمالي الحجوزات', stat_confirmed:'مؤكدة', stat_cancelled:'ملغاة', stat_system:'حالة النظام',
+    sysStatus:'حالة النظام',
+    noRes:'لا توجد حجوزات', noResSub:'لم يتم العثور على حجوزات بالبيانات المدخلة.',
+    empty_title:'لا توجد حجوزات', empty_sub:'لم يتم العثور على حجوزات بالبيانات المدخلة.',
+    upcoming:'قادم', cancelled:'ملغي', status_confirmed:'مؤكد', status_cancelled:'ملغي',
+    cancelBtn:'❌ إلغاء هذا الحجز', btn_cancel_res:'❌ إلغاء هذا الحجز',
+    alreadyCancelled:'هذا الحجز ملغي بالفعل.', already_cancelled:'هذا الحجز ملغي بالفعل.',
+    confirmCancel:'هل أنت متأكد من إلغاء هذا الحجز؟', confirm_cancel:'هل أنت متأكد من إلغاء هذا الحجز؟',
+    cancelSuccess:'تم إلغاء الحجز بنجاح ✅', cancel_success:'تم إلغاء الحجز بنجاح ✅',
+    // Detail field labels
+    fieldName:'الاسم', fieldEmail:'البريد', fieldDate:'التاريخ', fieldTime:'الوقت',
+    fieldBranch:'الفرع', fieldRegion:'المنطقة', fieldEmpId:'رقم الموظف',
+    fieldStatus:'الحالة', fieldBranchCode:'كود الفرع',
+    // Admin
+    admin_title:'تسجيل الدخول', admin_sub:'للمشرفين والقادة فقط',
+    tab_leader:'المشرف', tab_senior:'المشرف الأول',
+    quickActions:'⚡ إجراءات سريعة', viewAll:'📋 عرض جميع الحجوزات',
+    openFull:'🔗 فتح لوحة التحكم الكاملة', recentRes:'🕐 أحدث الحجوزات',
+    noResYet:'لا توجد حجوزات حتى الآن', sysClosed:'النظام مغلق. آخر يوم للحجز:',
+    empIdLabel:'رقم الموظف', emp_id_label:'رقم الموظف:',
+    recent_bookings:'🕐 أحدث الحجوزات', quick_actions:'⚡ إجراءات سريعة',
+    btn_view_all:'📋 عرض جميع الحجوزات', btn_open_dash:'🔗 فتح لوحة التحكم الكاملة',
+    no_bookings_yet:'لا توجد حجوزات حتى الآن', system_closed_msg:'النظام مغلق. آخر يوم للحجز:',
+    // Loader
+    loading:'جارٍ التحميل...', loadingLeaders:'جارٍ تحميل المشرفين...',
+    loadingBranches:'جارٍ تحميل الفروع...', loadingSlots:'جارٍ تحميل المواعيد...',
+    loadingSystem:'جارٍ فحص النظام...', loadingLogin:'جارٍ تسجيل الدخول...',
+    loadingSearch:'جارٍ البحث...', loadingCancel:'جارٍ الإلغاء...', loadingData:'جارٍ تحميل البيانات...',
+    // Validation errors
+    selectSupervisorFirst:'اختر المشرف أولاً.', selectBranchFirst:'اختر الفرع.',
+    enterName:'أدخل اسمك الكامل.', enterValidEmail:'أدخل بريد إلكتروني صحيح.',
+    enterEmpId:'رقم الموظف يجب أن يكون 4 أرقام على الأقل.',
+    err_enter_empid:'رقم الموظف يجب أن يكون 4 أرقام على الأقل.',
+    selectDay:'اختر يوماً من التقويم.', selectTime2:'اختر الوقت.',
+    enterEmpOrEmail:'أدخل رقم الموظف أو البريد الإلكتروني.',
+    enterSupervisor:'اختر المشرف.', enterAdminId:'اختر المشرف.', enterPass:'أدخل كلمة المرور.',
+    enterSeniorEmail:'أدخل البريد الإلكتروني.', wrongCreds:'بيانات غير صحيحة.',
+    noBranches:'لا توجد فروع لهذا المشرف.', noSlots:'لا توجد مواعيد متاحة حالياً.',
+    noTimesForDay:'لا توجد أوقات لهذا اليوم.',
+    // Language toggle label
+    lang_switch:'EN',  // shown when AR is active → click to switch to English
+  },
+  en: {
+    // Home
+    home_title:'Reservation System', home_sub:'Book your appointment easily from your phone',
+    home_book_label:'Book New Appointment', home_book_sub:'Select supervisor, branch & time',
+    home_myres_label:'My Reservations', home_myres_sub:'View and manage your bookings',
+    home_admin_label:'Admin Panel', home_admin_sub:'For supervisors and leaders',
+    home_alert:'Make sure to enter your correct email to receive booking confirmation.',
+    footer:'© Aldawaa Medical Services · DFD Reservations',
+    // Nav titles
+    book_title:'New Booking', book2_title:'Choose Appointment', book3_title:'Confirm Booking',
+    success_nav:'Booked!', myres_nav:'My Reservations', resdetail_nav:'Booking Details',
+    admin_nav:'Admin Panel', adminPanel:'Admin Panel',
+    // Steps
+    step1of3:'Step 1 of 3', step2of3:'Step 2 of 3', step3of3:'Step 3 of 3',
+    // Field labels
+    label_leader:'👤 Supervisor', label_branch:'🏢 Branch', label_fullname:'👤 Full Name',
+    label_email:'✉️ Email Address', label_empid:'🔢 Employee ID', label_time:'🕐 Time',
+    label_leader_id:'🆔 Supervisor ID', label_password:'🔒 Password',
+    supervisor:'Supervisor', branch:'Branch', fullName:'Full Name',
+    email:'Email', empId:'Employee ID', time:'Time', date:'Date',
+    // Placeholders
+    ph_fullname:'Enter your full name', ph_empid:'Enter employee ID',
+    // Select options
+    select_leader:'Select supervisor...', selectSupervisor:'Select supervisor...',
+    select_branch_first:'Select branch first...', selectBranch:'Select branch first...',
+    select_time:'Select time...', selectTime:'Select time...',
+    // Buttons
+    btn_next_step2:'Next — Choose Appointment ›', btn_next_step3:'Next — Review & Confirm ›',
+    btn_confirm:'✅ Confirm Booking', btn_home:'Back to Home', btn_book_another:'Book Another Appointment',
+    btn_search:'🔍 Search My Reservations', btn_login:'Sign In →', btn_new_booking:'Book New Appointment',
+    bookNew:'Book New Appointment',
+    // Booking flow
+    book3_review:'Review your booking details before confirming', booking_details:'📝 Booking Details',
+    cal_hint:'Select an available day to see times', or_text:'or',
+    success_title:'Booking Confirmed!', success_sub:'You will receive a confirmation email.',
+    bookingDoneSub:'You will receive a confirmation email.',
+    sending:'Submitting booking...',
+    // Calendar
+    cal_weekdays:['Sa','Su','Mo','Tu','We','Th','Fr'],
+    months:['January','February','March','April','May','June','July','August','September','October','November','December'],
+    days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    // My Reservations
+    myres_title:'My Reservations', myres_sub:'Enter your employee ID or email to search your bookings',
+    resDetail:'Booking Details', moreDetails:'Details ›',
+    total:'Total Bookings', active:'Active Bookings',
+    totalRes:'Total Bookings', upcomingRes:'Confirmed', cancelledRes:'Cancelled',
+    lbl_total:'Total Bookings', lbl_active:'Active Bookings',
+    stat_total:'Total Bookings', stat_confirmed:'Confirmed', stat_cancelled:'Cancelled', stat_system:'System Status',
+    sysStatus:'System Status',
+    noRes:'No Reservations', noResSub:'No bookings found with the provided details.',
+    empty_title:'No Reservations', empty_sub:'No bookings found with the provided details.',
+    upcoming:'Confirmed', cancelled:'Cancelled', status_confirmed:'Confirmed', status_cancelled:'Cancelled',
+    cancelBtn:'❌ Cancel This Booking', btn_cancel_res:'❌ Cancel This Booking',
+    alreadyCancelled:'This booking is already cancelled.', already_cancelled:'This booking is already cancelled.',
+    confirmCancel:'Are you sure you want to cancel this booking?', confirm_cancel:'Are you sure you want to cancel this booking?',
+    cancelSuccess:'Booking cancelled successfully ✅', cancel_success:'Booking cancelled successfully ✅',
+    // Detail field labels
+    fieldName:'Name', fieldEmail:'Email', fieldDate:'Date', fieldTime:'Time',
+    fieldBranch:'Branch', fieldRegion:'Region', fieldEmpId:'Employee ID',
+    fieldStatus:'Status', fieldBranchCode:'Branch Code',
+    // Admin
+    admin_title:'Sign In', admin_sub:'For supervisors and leaders only',
+    tab_leader:'Supervisor', tab_senior:'Senior',
+    quickActions:'⚡ Quick Actions', viewAll:'📋 View All Bookings',
+    openFull:'🔗 Open Full Dashboard', recentRes:'🕐 Recent Bookings',
+    noResYet:'No bookings yet', sysClosed:'System closed. Last booking date:',
+    empIdLabel:'Employee ID', emp_id_label:'Employee ID:',
+    recent_bookings:'🕐 Recent Bookings', quick_actions:'⚡ Quick Actions',
+    btn_view_all:'📋 View All Bookings', btn_open_dash:'🔗 Open Full Dashboard',
+    no_bookings_yet:'No bookings yet', system_closed_msg:'System closed. Last booking date:',
+    // Loader
+    loading:'Loading...', loadingLeaders:'Loading supervisors...',
+    loadingBranches:'Loading branches...', loadingSlots:'Loading appointments...',
+    loadingSystem:'Checking system...', loadingLogin:'Signing in...',
+    loadingSearch:'Searching...', loadingCancel:'Cancelling...', loadingData:'Loading data...',
+    // Validation errors
+    selectSupervisorFirst:'Please select a supervisor.', selectBranchFirst:'Please select a branch.',
+    enterName:'Please enter your full name.', enterValidEmail:'Please enter a valid email address.',
+    enterEmpId:'Employee ID must be at least 4 digits.',
+    err_enter_empid:'Employee ID must be at least 4 digits.',
+    selectDay:'Please select a date from the calendar.', selectTime2:'Please select a time.',
+    enterEmpOrEmail:'Please enter employee ID or email.',
+    enterSupervisor:'Please select a supervisor.', enterAdminId:'Please select a supervisor.',
+    enterPass:'Please enter your password.',
+    enterSeniorEmail:'Please enter your email address.', wrongCreds:'Incorrect credentials.',
+    noBranches:'No branches found for this supervisor.', noSlots:'No available appointments.',
+    noTimesForDay:'No times available for this day.',
+    // Language toggle label
+    lang_switch:'عربي',  // shown when EN is active → click to switch to Arabic
+  }
+};
+
+let currentLang = 'ar';
+
+function t(key) {
+  return TRANSLATIONS[currentLang][key] || TRANSLATIONS['ar'][key] || key;
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  applyLang();
+}
+
+function applyLang() {
+  const isAr = currentLang === 'ar';
+  const html = document.documentElement;
+
+  // Flip document direction & language
+  html.setAttribute('lang', currentLang);
+  html.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+
+  // Update all [data-i18n] text nodes
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (val) el.textContent = val;
+  });
+
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    const val = t(key);
+    if (val) el.placeholder = val;
+  });
+
+  // Update home lang button
+  const homeLangLabel = document.getElementById('homeLangLabel');
+  const homeLangFlag  = document.getElementById('homeLangFlag');
+  if (homeLangLabel) homeLangLabel.textContent = t('lang_switch');
+  if (homeLangFlag)  homeLangFlag.textContent  = isAr ? '🌐' : '🌍';
+
+  // Flip button side for RTL/LTR
+  const wrap = document.getElementById('langBtnWrap');
+  if (wrap) {
+    wrap.style.left  = isAr ? '16px' : 'auto';
+    wrap.style.right = isAr ? 'auto' : '16px';
+  }
+
+  // Update calendar weekdays
+  const wdContainer = document.getElementById('calWeekdays');
+  if (wdContainer) {
+    const days = t('cal_weekdays');
+    wdContainer.innerHTML = days.map(d => `<span>${d}</span>`).join('');
+  }
+
+  // Re-render calendar with correct month names
+  if (state.cal.available.size) renderCal();
+
+  // Flip calendar nav arrows
+  document.querySelectorAll('.arrow-icon').forEach(el => {
+    el.textContent = isAr ? '‹' : '›';
+  });
+
+  // Save preference
+  try { localStorage.setItem('dfd_lang', currentLang); } catch(e) {}
+}
 
 /* ================================================================
    STATE
@@ -1367,27 +1590,43 @@ function goToAdmin() {
 }
 
 /* ================================================================
-   GAS API CALL
-   Uses fetch GET with URL params — the only method GAS supports
-   from external origins without CORS issues.
+   GAS API CALL — JSONP (only reliable cross-origin method for GAS)
+   fetch() silently fails because GAS redirects strip the response.
+   JSONP uses a <script> tag which follows redirects natively.
+   GAS must call: callback(data) — handled in gas-api-handler.js
    ================================================================ */
-async function gasCall(action, params = {}) {
-  const qs = new URLSearchParams({ api: "1", action, ...params });
-  // GAS redirects GET requests, so we must follow redirects (default)
-  const resp = await fetch(`${GAS_URL}?${qs.toString()}`, {
-    method: "GET",
-    redirect: "follow",
+function gasCall(action, params = {}) {
+  return new Promise((resolve, reject) => {
+    const cbName = '_cb_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('Request timed out. Check your GAS URL.'));
+    }, 15000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cbName];
+      const el = document.getElementById(cbName);
+      if (el) el.remove();
+    }
+
+    window[cbName] = function(data) { cleanup(); resolve(data); };
+
+    const qs = new URLSearchParams({ api: '1', action, callback: cbName, ...params });
+    const s = document.createElement('script');
+    s.id = cbName;
+    s.src = GAS_URL + '?' + qs.toString();
+    s.onerror = () => { cleanup(); reject(new Error('Network error.')); };
+    document.head.appendChild(s);
   });
-  const text = await resp.text();
-  try { return JSON.parse(text); }
-  catch (e) { return { ok: false, message: "Parse error: " + text.slice(0, 200) }; }
 }
 
 /* ================================================================
    LOADING
    ================================================================ */
 function showLoader(text) {
-  document.getElementById('loaderText').textContent = text || 'جارٍ التحميل...';
+  document.getElementById('loaderText').textContent = text || t('loading');
   document.getElementById('loader').classList.add('show');
 }
 function hideLoader() {
@@ -1423,7 +1662,7 @@ function setMsg(containerId, msg, type) {
    ================================================================ */
 async function ensureLeaders() {
   if (state.leaders.length) return state.leaders;
-  showLoader('جارٍ تحميل المشرفين...');
+  showLoader(t('loadingLeaders'));
   try {
     const data = await gasCall('listLeaders');
     if (Array.isArray(data)) state.leaders = data;
@@ -1437,7 +1676,7 @@ async function loadLeadersInto(selectId, cb) {
   const sel = document.getElementById(selectId);
   if (!sel) return;
   await ensureLeaders();
-  sel.innerHTML = '<option value="">اختر المشرف...</option>';
+  sel.innerHTML = `<option value="">${t('selectSupervisor')}</option>`;
   state.leaders.forEach(l => {
     const o = document.createElement('option');
     o.value = l.leader_id;
@@ -1456,18 +1695,18 @@ async function onBookLeaderChange() {
   state.bk.leaderName = sel.options[sel.selectedIndex]?.text || '';
 
   const branchSel = document.getElementById('bk_branch');
-  branchSel.innerHTML = '<option value="">اختر الفرع...</option>';
+  branchSel.innerHTML = `<option value="">${t('selectBranch')}</option>`;
   branchSel.disabled = true;
   state.bk.branchCode = '';
   setMsg('bk_step1_msg', '', '');
 
   if (!state.bk.leaderId) return;
 
-  showLoader('جارٍ تحميل الفروع...');
+  showLoader(t('loadingBranches'));
   try {
     const branches = await gasCall('listBranches', { leaderId: state.bk.leaderId });
     const list = Array.isArray(branches) ? branches : (branches.branches || []);
-    branchSel.innerHTML = '<option value="">اختر الفرع...</option>';
+    branchSel.innerHTML = `<option value="">${t('selectBranch')}</option>`;
     list.forEach(b => {
       const o = document.createElement('option');
       o.value = b.branch_code;
@@ -1475,9 +1714,9 @@ async function onBookLeaderChange() {
       branchSel.appendChild(o);
     });
     branchSel.disabled = false;
-    if (!list.length) setMsg('bk_step1_msg', 'لا توجد فروع لهذا المشرف.', 'warn');
+    if (!list.length) setMsg('bk_step1_msg', t('noBranches'), 'warn');
   } catch (e) {
-    setMsg('bk_step1_msg', 'تعذر تحميل الفروع: ' + e.message, 'error');
+    setMsg('bk_step1_msg', e.message, 'error');
   } finally { hideLoader(); }
 }
 
@@ -1493,52 +1732,63 @@ async function goBookStep2() {
   state.bk.email  = document.getElementById('bk_email').value.trim();
   state.bk.empId  = document.getElementById('bk_empid').value.trim();
 
-  if (!state.bk.leaderId)  return setMsg('bk_step1_msg', 'اختر المشرف أولاً.', 'warn');
-  if (!state.bk.branchCode) return setMsg('bk_step1_msg', 'اختر الفرع.', 'warn');
-  if (!state.bk.name)      return setMsg('bk_step1_msg', 'أدخل اسمك الكامل.', 'warn');
+  if (!state.bk.leaderId)  return setMsg('bk_step1_msg', t('selectSupervisorFirst'), 'warn');
+  if (!state.bk.branchCode) return setMsg('bk_step1_msg', t('selectBranchFirst'), 'warn');
+  if (!state.bk.name)      return setMsg('bk_step1_msg', t('enterName'), 'warn');
   if (!state.bk.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.bk.email))
-    return setMsg('bk_step1_msg', 'أدخل بريد إلكتروني صحيح.', 'warn');
+    return setMsg('bk_step1_msg', t('enterValidEmail'), 'warn');
   if (!state.bk.empId || state.bk.empId.length < 4)
-    return setMsg('bk_step1_msg', 'رقم الموظف يجب أن يكون 4 أرقام على الأقل.', 'warn');
+    return setMsg('bk_step1_msg', t('enterEmpId'), 'warn');
 
-  // Check system status
-  showLoader('جارٍ فحص النظام...');
+  showLoader(t('loadingSystem'));
   try {
-    const st = await gasCall('getSystemStatus', { leaderId: state.bk.leaderId });
+    const [st, slotsData] = await Promise.all([
+      gasCall('getSystemStatus', { leaderId: state.bk.leaderId }),
+      gasCall('getAvailableSlotsV2', {
+        leaderId: state.bk.leaderId,
+        branchCode: state.bk.branchCode
+      })
+    ]);
+
     if (st && st.closed) {
-      setMsg('bk_step1_msg', `⛔ انتهت فترة استقبال المواعيد. آخر يوم: ${st.closeAtText || '—'}`, 'error');
-      hideLoader();
+      setMsg('bk_step1_msg', `⛔ ${st.closeAtText || '—'}`, 'error');
       return;
     }
-  } catch (e) { /* ignore */ } finally { hideLoader(); }
 
-  // Load slots
-  showScreen('screenBook2');
-  await loadSlots();
+    showScreen('screenBook2');
+    applyLoadedSlots_(slotsData);
+  } catch (e) {
+    showScreen('screenBook2');
+    await loadSlots();
+  } finally { hideLoader(); }
 }
 
 async function loadSlots() {
   state.bk.dateStr = '';
   state.bk.slotId = '';
   const timeSel = document.getElementById('bk_time');
-  timeSel.innerHTML = '<option value="">اختر الوقت...</option>';
+  timeSel.innerHTML = `<option value="">${t('selectTime')}</option>`;
   timeSel.disabled = true;
   setMsg('bk_step2_msg', '', '');
 
-  showLoader('جارٍ تحميل المواعيد...');
+  showLoader(t('loadingSlots'));
   try {
     const data = await gasCall('getAvailableSlotsV2', {
       leaderId: state.bk.leaderId,
       branchCode: state.bk.branchCode
     });
-    state.cal.allSlots = data || {};
-    const keys = Object.keys(state.cal.allSlots).sort();
-    calSetAvailable(keys);
-    document.getElementById('calHint').style.display = keys.length ? 'block' : 'none';
-    if (!keys.length) setMsg('bk_step2_msg', 'لا توجد مواعيد متاحة حالياً.', 'warn');
+    applyLoadedSlots_(data);
   } catch (e) {
-    setMsg('bk_step2_msg', 'تعذر تحميل المواعيد: ' + e.message, 'error');
+    setMsg('bk_step2_msg', e.message, 'error');
   } finally { hideLoader(); }
+}
+
+function applyLoadedSlots_(data) {
+  state.cal.allSlots = data || {};
+  const keys = Object.keys(state.cal.allSlots).sort();
+  calSetAvailable(keys);
+  document.getElementById('calHint').style.display = keys.length ? 'block' : 'none';
+  if (!keys.length) setMsg('bk_step2_msg', t('noSlots'), 'warn');
 }
 
 /* ================================================================
@@ -1564,14 +1814,15 @@ function renderCal() {
   const title = document.getElementById('calTitle');
   if (!grid || !title) return;
 
-  const months = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-  title.textContent = `${months[state.cal.m]} ${toAr(state.cal.y)}`;
+  const months = t('months');
+  const isAr = currentLang === 'ar';
+  title.textContent = `${months[state.cal.m]} ${isAr ? toAr(state.cal.y) : state.cal.y}`;
   grid.innerHTML = '';
 
   const firstDay = new Date(state.cal.y, state.cal.m, 1);
   const daysInMonth = new Date(state.cal.y, state.cal.m + 1, 0).getDate();
   const jsDow = firstDay.getDay();
-  const offset = (jsDow + 1) % 7; // Sat=0
+  const offset = currentLang === 'ar' ? (jsDow + 1) % 7 : jsDow;
 
   for (let i = 0; i < offset; i++) {
     const b = document.createElement('div');
@@ -1588,7 +1839,7 @@ function renderCal() {
     const key = `${state.cal.y}-${pad2(state.cal.m+1)}-${pad2(d)}`;
     const cell = document.createElement('div');
     cell.className = 'cal-cell';
-    cell.textContent = toAr(d);
+    cell.textContent = isAr ? toAr(d) : d;
     if (key === todayKey) cell.classList.add('today');
 
     if (state.cal.available.has(key)) {
@@ -1620,15 +1871,14 @@ function calSelectDate(key) {
   renderCal();
   document.getElementById('calHint').style.display = 'none';
 
-  // populate times
   const timeSel = document.getElementById('bk_time');
-  timeSel.innerHTML = '<option value="">اختر الوقت...</option>';
+  timeSel.innerHTML = `<option value="">${t('selectTime')}</option>`;
   timeSel.disabled = true;
   state.bk.slotId = '';
 
   const list = state.cal.allSlots[key] || [];
   if (!list.length) {
-    setMsg('bk_step2_msg', 'لا توجد أوقات لهذا اليوم.', 'warn');
+    setMsg('bk_step2_msg', t('noTimesForDay'), 'warn');
     return;
   }
 
@@ -1638,7 +1888,7 @@ function calSelectDate(key) {
     if (!slotId) return;
     const o = document.createElement('option');
     o.value = slotId;
-    o.textContent = label || 'موعد متاح';
+    o.textContent = label || t('upcoming');
     timeSel.appendChild(o);
   });
   timeSel.disabled = false;
@@ -1650,18 +1900,21 @@ function goBookStep3() {
   const timeSel = document.getElementById('bk_time');
   state.bk.slotLabel = timeSel.options[timeSel.selectedIndex]?.text || '';
 
-  if (!state.bk.dateStr) return setMsg('bk_step2_msg', 'اختر يوماً من التقويم.', 'warn');
-  if (!state.bk.slotId)  return setMsg('bk_step2_msg', 'اختر الوقت.', 'warn');
+  if (!state.bk.dateStr) return setMsg('bk_step2_msg', t('selectDay'), 'warn');
+  if (!state.bk.slotId)  return setMsg('bk_step2_msg', t('selectTime2'), 'warn');
 
-  // Build summary
+  const labelMap = {
+    supervisor: t('supervisor'), branch: t('branch'), name: t('fullName'),
+    email: t('email'), empId: t('empId'), date: t('date'), time: t('time')
+  };
   const rows = [
-    ['المشرف', state.bk.leaderName || state.bk.leaderId],
-    ['الفرع',  state.bk.branchName || state.bk.branchCode],
-    ['الاسم',  state.bk.name],
-    ['البريد', state.bk.email],
-    ['رقم الموظف', state.bk.empId],
-    ['التاريخ', formatDateAr(state.bk.dateStr)],
-    ['الوقت',  state.bk.slotLabel],
+    [labelMap.supervisor, state.bk.leaderName || state.bk.leaderId],
+    [labelMap.branch,     state.bk.branchName || state.bk.branchCode],
+    [labelMap.name,       state.bk.name],
+    [labelMap.email,      state.bk.email],
+    [labelMap.empId,      state.bk.empId],
+    [labelMap.date,       formatDate(state.bk.dateStr)],
+    [labelMap.time,       state.bk.slotLabel],
   ];
   document.getElementById('bk_summary').innerHTML = rows.map(([l, v]) => `
     <div class="summary-row">
@@ -1677,7 +1930,7 @@ function goBookStep3() {
 async function submitBooking() {
   const btn = document.getElementById('bk_confirmBtn');
   btn.disabled = true;
-  showLoader('جارٍ إرسال الحجز...');
+  showLoader(t('sending'));
   try {
     const res = await gasCall('bookSlot', {
       leaderId:   state.bk.leaderId,
@@ -1689,14 +1942,14 @@ async function submitBooking() {
       branchCode: state.bk.branchCode
     });
     if (res && res.success) {
-      document.getElementById('bk_success_msg').textContent = res.message || 'سيصلك بريد إلكتروني بتفاصيل الحجز.';
+      document.getElementById('bk_success_msg').textContent = res.message || t('bookingDoneSub');
       showScreen('screenBookSuccess');
     } else {
-      setMsg('bk_step3_msg', (res && res.message) || 'فشل الحجز، حاول مرة أخرى.', 'error');
+      setMsg('bk_step3_msg', (res && res.message) || 'Failed. Please try again.', 'error');
       btn.disabled = false;
     }
   } catch (e) {
-    setMsg('bk_step3_msg', 'خطأ في الاتصال: ' + e.message, 'error');
+    setMsg('bk_step3_msg', e.message, 'error');
     btn.disabled = false;
   } finally { hideLoader(); }
 }
@@ -1709,10 +1962,10 @@ async function searchMyReservations() {
   const email  = document.getElementById('mr_email').value.trim();
   const leader = document.getElementById('mr_leader').value.trim();
 
-  if (!empId && !email)       return setMsg('mr_login_msg', 'أدخل رقم الموظف أو البريد الإلكتروني.', 'warn');
-  if (!leader)                return setMsg('mr_login_msg', 'اختر المشرف.', 'warn');
+  if (!empId && !email) return setMsg('mr_login_msg', t('enterEmpOrEmail'), 'warn');
+  if (!leader)          return setMsg('mr_login_msg', t('enterSupervisor'), 'warn');
 
-  showLoader('جارٍ البحث...');
+  showLoader(t('loadingSearch'));
   try {
     const res = await gasCall('listMyReservations', {
       leaderId: leader,
@@ -1724,7 +1977,7 @@ async function searchMyReservations() {
     renderMyReservations();
     showScreen('screenMyRes');
   } catch (e) {
-    setMsg('mr_login_msg', 'خطأ: ' + e.message, 'error');
+    setMsg('mr_login_msg', e.message, 'error');
   } finally { hideLoader(); }
 }
 
@@ -1734,23 +1987,24 @@ function renderMyReservations() {
     body.innerHTML = `
       <div class="empty">
         <div class="empty-icon">📭</div>
-        <div class="empty-title">لا توجد حجوزات</div>
-        <div class="empty-sub">لم يتم العثور على حجوزات بالبيانات المدخلة.</div>
+        <div class="empty-title">${t('noRes')}</div>
+        <div class="empty-sub">${t('noResSub')}</div>
       </div>
-      <div style="padding:0 0 16px"><button class="btn btn-primary" onclick="goToBooking()">احجز موعد جديد</button></div>
+      <div style="padding:0 0 16px"><button class="btn btn-primary" onclick="goToBooking()">${t('bookNew')}</button></div>
     `;
     return;
   }
+  const upcomingCount = state.myRes.filter(r => !isCancelled(r)).length;
   body.innerHTML = `
     <div style="margin-bottom:16px">
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-num">${state.myRes.length}</div>
-          <div class="stat-lbl">إجمالي الحجوزات</div>
+          <div class="stat-lbl">${t('total')}</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">${state.myRes.filter(r => !isCancelled(r)).length}</div>
-          <div class="stat-lbl">الحجوزات النشطة</div>
+          <div class="stat-num">${upcomingCount}</div>
+          <div class="stat-lbl">${t('active')}</div>
         </div>
       </div>
     </div>
@@ -1764,24 +2018,31 @@ function isCancelled(r) {
   return s === 'cancelled' || s === 'ملغي' || s === 'true';
 }
 
+function isUpcoming(r) {
+  const s = String(r.status || '').toLowerCase();
+  return s === 'upcoming' || s === '' || s === 'قادم';
+}
+
 function buildResCard(r, i) {
-  const status = isCancelled(r) ? 'cancelled' : 'confirmed';
-  const statusLabel = isCancelled(r) ? 'ملغي' : 'مؤكد';
-  const date = r.date || r.Date || r.dateStr || '';
-  const time = r.time || r.Time || r.slotLabel || r.timeText || '';
+  const cancelled = isCancelled(r);
+  const statusClass = cancelled ? 'cancelled' : 'upcoming';
+  const statusLabel = cancelled ? t('cancelled') : t('upcoming');
+  const date   = r.date || r.Date || r.dateStr || '';
+  const time   = r.time || r.Time || r.slotLabel || r.timeText || '';
   const branch = r.branch || r.Branch || r.branch_code || '';
-  const name = r.name || r.Name || '';
+  const name   = r.name || r.Name || '';
   return `
     <div class="res-card" onclick="showResDetail(${i})">
       <div class="res-card-head">
         <div class="res-card-name">${name || '—'}</div>
-        <div class="res-badge ${status}">${statusLabel}</div>
+        <div class="res-badge ${statusClass}">${statusLabel}</div>
       </div>
       <div class="res-meta">
-        ${date ? `<div class="res-meta-row"><span class="res-meta-icon">📅</span>${formatDateAr(date)}</div>` : ''}
-        ${time ? `<div class="res-meta-row"><span class="res-meta-icon">🕐</span>${time}</div>` : ''}
+        ${date   ? `<div class="res-meta-row"><span class="res-meta-icon">📅</span>${formatDate(date)}</div>` : ''}
+        ${time   ? `<div class="res-meta-row"><span class="res-meta-icon">🕐</span>${time}</div>` : ''}
         ${branch ? `<div class="res-meta-row"><span class="res-meta-icon">🏢</span>${branch}</div>` : ''}
       </div>
+      <div style="margin-top:8px;text-align:left;font-size:12px;color:var(--blue);font-weight:700">${t('moreDetails')}</div>
     </div>
   `;
 }
@@ -1790,29 +2051,34 @@ function showResDetail(i) {
   state.currentRes = state.myRes[i];
   const r = state.currentRes;
   const cancelled = isCancelled(r);
-  const fields = Object.entries(r).filter(([k]) => !['token','cancel_token','reservation_id','id'].includes(k));
+
   const labelMap = {
-    name:'الاسم', email:'البريد', date:'التاريخ', time:'الوقت',
-    branch:'الفرع', region:'المنطقة', employeeId:'رقم الموظف',
-    status:'الحالة', branch_code:'كود الفرع'
+    name: t('fieldName'), email: t('fieldEmail'), date: t('fieldDate'), time: t('fieldTime'),
+    branch: t('fieldBranch'), region: t('fieldRegion'), employeeId: t('fieldEmpId'),
+    status: t('fieldStatus'), branch_code: t('fieldBranchCode'),
+    reservation_id: 'ID', cancel_token: null, token: null, id: null
   };
-  const rows = fields.map(([k,v]) => {
-    const lbl = labelMap[k] || k;
-    let val = v == null ? '—' : String(v);
-    if (k === 'date') val = formatDateAr(val);
-    return `<div class="summary-row"><span class="summary-label">${lbl}</span><span class="summary-value">${val}</span></div>`;
-  }).join('');
+
+  const rows = Object.entries(r)
+    .filter(([k]) => labelMap[k] !== null && !['token','cancel_token','id'].includes(k))
+    .map(([k, v]) => {
+      const lbl = labelMap[k] || k;
+      let val = v == null ? '—' : String(v);
+      if (k === 'date') val = formatDate(val);
+      if (k === 'status') val = isCancelled(r) ? t('cancelled') : t('upcoming');
+      return `<div class="summary-row"><span class="summary-label">${lbl}</span><span class="summary-value">${val}</span></div>`;
+    }).join('');
 
   document.getElementById('resDetailBody').innerHTML = `
     <div class="admin-section" style="margin-bottom:16px">
-      <div class="admin-section-head">📝 تفاصيل الحجز</div>
+      <div class="admin-section-head">📝 ${t('resDetail')}</div>
       <div class="admin-section-body">${rows}</div>
     </div>
     ${!cancelled ? `
       <div style="padding:0 0 80px">
-        <button class="btn btn-danger" onclick="cancelMyReservation()">❌ إلغاء هذا الحجز</button>
+        <button class="btn btn-danger" onclick="cancelMyReservation()">${t('cancelBtn')}</button>
       </div>
-    ` : `<div class="alert error"><span class="alert-icon">❌</span><span>هذا الحجز ملغي بالفعل.</span></div>`}
+    ` : `<div class="alert error"><span class="alert-icon">❌</span><span>${t('alreadyCancelled')}</span></div>`}
   `;
   showScreen('screenResDetail');
 }
@@ -1822,25 +2088,21 @@ async function cancelMyReservation() {
   const token = r.cancel_token || r.token || r.reservation_id || r.id || '';
   const leaderId = document.getElementById('mr_leader').value;
 
-  if (!confirm('هل أنت متأكد من إلغاء هذا الحجز؟')) return;
+  if (!confirm(t('confirmCancel'))) return;
 
-  showLoader('جارٍ الإلغاء...');
+  showLoader(t('loadingCancel'));
   try {
-    const res = await gasCall('cancelReservation', {
-      leaderId,
-      reservationId: token
-    });
+    const res = await gasCall('cancelReservation', { leaderId, reservationId: token });
     if (res && res.ok) {
-      toast('تم إلغاء الحجز بنجاح ✅', 'success');
+      toast(t('cancelSuccess'), 'success');
       state.currentRes.status = 'cancelled';
-      // refresh list
       await searchMyReservations();
       showScreen('screenMyRes');
     } else {
-      toast((res && res.message) || 'فشل الإلغاء.', 'error');
+      toast((res && res.message) || 'Failed.', 'error');
     }
   } catch (e) {
-    toast('خطأ: ' + e.message, 'error');
+    toast(e.message, 'error');
   } finally { hideLoader(); }
 }
 
@@ -1859,38 +2121,38 @@ function switchAdminTab(tab) {
 
 async function doAdminLogin() {
   setMsg('adm_login_msg', '', '');
-  showLoader('جارٍ تسجيل الدخول...');
+  showLoader(t('loadingLogin'));
   try {
     let res;
     if (adminTab === 'leader') {
       const leaderId = document.getElementById('adm_leaderId').value;
       const pass     = document.getElementById('adm_pass').value;
-      if (!leaderId) { hideLoader(); return setMsg('adm_login_msg', 'اختر المشرف.', 'warn'); }
-      if (!pass)     { hideLoader(); return setMsg('adm_login_msg', 'أدخل كلمة المرور.', 'warn'); }
+      if (!leaderId) { hideLoader(); return setMsg('adm_login_msg', t('enterAdminId'), 'warn'); }
+      if (!pass)     { hideLoader(); return setMsg('adm_login_msg', t('enterPass'), 'warn'); }
       res = await gasCall('adminLogin', { leaderId, password: pass });
     } else {
       const email = document.getElementById('adm_seniorEmail').value.trim();
       const pass  = document.getElementById('adm_seniorPass').value;
-      if (!email) { hideLoader(); return setMsg('adm_login_msg', 'أدخل البريد الإلكتروني.', 'warn'); }
-      if (!pass)  { hideLoader(); return setMsg('adm_login_msg', 'أدخل كلمة المرور.', 'warn'); }
+      if (!email) { hideLoader(); return setMsg('adm_login_msg', t('enterSeniorEmail'), 'warn'); }
+      if (!pass)  { hideLoader(); return setMsg('adm_login_msg', t('enterPass'), 'warn'); }
       res = await gasCall('seniorLogin', { seniorEmail: email, password: pass });
     }
 
     if (res && res.ok) {
-      state.adminToken     = res.token;
-      state.adminRole      = res.role;
-      state.adminLeaderId  = res.leader_id || null;
+      state.adminToken      = res.token;
+      state.adminRole       = res.role;
+      state.adminLeaderId   = res.leader_id || null;
       state.adminLeaderName = res.leader_name || null;
       state.adminSeniorEmail = res.senior_email || null;
       document.getElementById('adminDashTitle').textContent =
-        res.leader_name || res.senior_name || 'لوحة الإدارة';
+        res.leader_name || res.senior_name || t('adminPanel');
       loadAdminDash();
       showScreen('screenAdminDash');
     } else {
-      setMsg('adm_login_msg', (res && res.message) || 'بيانات غير صحيحة.', 'error');
+      setMsg('adm_login_msg', (res && res.message) || t('wrongCreds'), 'error');
     }
   } catch (e) {
-    setMsg('adm_login_msg', 'خطأ: ' + e.message, 'error');
+    setMsg('adm_login_msg', e.message, 'error');
   } finally { hideLoader(); }
 }
 
@@ -1908,151 +2170,172 @@ function adminRefresh() { loadAdminDash(); }
 async function loadAdminDash() {
   const body = document.getElementById('adminDashBody');
   body.innerHTML = '<div class="empty"><div class="spinner"></div></div>';
-  showLoader('جارٍ تحميل البيانات...');
+  showLoader(t('loadingData'));
 
   try {
     const leaderId = state.adminLeaderId;
     const token    = state.adminToken;
 
-    // Fetch reservations
     const resData = await gasCall('adminListReservations', { token, leaderId });
     const reservations = Array.isArray(resData) ? resData : (resData.reservations || resData.data || []);
 
     const total     = reservations.length;
-    const confirmed = reservations.filter(r => !isCancelled(r)).length;
-    const cancelled = total - confirmed;
+    const upcoming  = reservations.filter(r => !isCancelled(r)).length;
+    const cancelled = total - upcoming;
 
-    // System status
     let systemStatus = null;
-    try {
-      systemStatus = await gasCall('getSystemStatus', { leaderId });
-    } catch (e) { /* ignore */ }
+    try { systemStatus = await gasCall('getSystemStatus', { leaderId }); } catch (e) {}
+
+    // Store for detail view
+    state.adminReservations = reservations;
 
     body.innerHTML = `
-      <!-- Stats -->
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-num">${total}</div>
-          <div class="stat-lbl">إجمالي الحجوزات</div>
+          <div class="stat-lbl">${t('totalRes')}</div>
         </div>
         <div class="stat-card">
-          <div class="stat-num">${confirmed}</div>
-          <div class="stat-lbl">مؤكدة</div>
+          <div class="stat-num" style="color:var(--success)">${upcoming}</div>
+          <div class="stat-lbl">${t('upcomingRes')}</div>
         </div>
       </div>
       <div class="stats-row" style="margin-top:-6px">
         <div class="stat-card">
           <div class="stat-num" style="color:var(--danger)">${cancelled}</div>
-          <div class="stat-lbl">ملغاة</div>
+          <div class="stat-lbl">${t('cancelledRes')}</div>
         </div>
         <div class="stat-card">
           <div class="stat-num" style="color:${systemStatus?.closed?'var(--danger)':'var(--success)'}">
             ${systemStatus?.closed ? '⛔' : '✅'}
           </div>
-          <div class="stat-lbl">حالة النظام</div>
+          <div class="stat-lbl">${t('sysStatus')}</div>
         </div>
       </div>
 
       ${systemStatus?.closed ? `
         <div class="alert error">
           <span class="alert-icon">⛔</span>
-          <span>النظام مغلق. آخر يوم للحجز: ${systemStatus.closeAtText || '—'}</span>
+          <span>${t('sysClosed')} ${systemStatus.closeAtText || '—'}</span>
         </div>
       ` : ''}
 
-      <!-- Quick Actions -->
       <div class="admin-section">
-        <div class="admin-section-head">⚡ إجراءات سريعة</div>
+        <div class="admin-section-head">${t('quickActions')}</div>
         <div class="admin-section-body" style="display:flex;flex-direction:column;gap:10px">
-          <button class="btn btn-ghost btn-sm" onclick="adminShowAllReservations()">📋 عرض جميع الحجوزات</button>
-          <button class="btn btn-ghost btn-sm" onclick="adminOpenFullDashboard()">🔗 فتح لوحة التحكم الكاملة</button>
+          <button class="btn btn-ghost btn-sm" onclick="adminShowAllReservations()">${t('viewAll')}</button>
+          <button class="btn btn-ghost btn-sm" onclick="adminOpenFullDashboard()">${t('openFull')}</button>
         </div>
       </div>
 
-      <!-- Recent Reservations -->
       <div class="admin-section">
-        <div class="admin-section-head">🕐 أحدث الحجوزات</div>
+        <div class="admin-section-head">${t('recentRes')}</div>
         <div class="admin-section-body" id="adminRecentRes">
           ${reservations.length === 0
-            ? '<div class="empty" style="padding:20px 0"><div class="empty-icon">📭</div><div class="empty-sub">لا توجد حجوزات حتى الآن</div></div>'
-            : reservations.slice(0, 8).map(r => buildAdminResRow(r)).join('')
+            ? `<div class="empty" style="padding:20px 0"><div class="empty-icon">📭</div><div class="empty-sub">${t('noResYet')}</div></div>`
+            : reservations.slice(0, 10).map((r, i) => buildAdminResRow(r, i)).join('')
           }
         </div>
       </div>
-
       <div style="height:20px"></div>
     `;
   } catch (e) {
-    body.innerHTML = `<div class="alert error" style="margin:16px"><span>خطأ: ${e.message}</span></div>`;
+    body.innerHTML = `<div class="alert error" style="margin:16px"><span>${e.message}</span></div>`;
   } finally { hideLoader(); }
 }
 
-function buildAdminResRow(r) {
+function buildAdminResRow(r, i) {
   const cancelled = isCancelled(r);
+  const statusClass = cancelled ? 'cancelled' : 'upcoming';
+  const statusLabel = cancelled ? t('cancelled') : t('upcoming');
   const name   = r.name || r.Name || '—';
   const date   = r.date || r.Date || '';
   const time   = r.time || r.Time || '';
   const branch = r.branch || r.branch_code || '';
   const empId  = r.employeeId || r.employee_id || '';
   return `
-    <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
-      <div>
-        <div style="font-size:14px;font-weight:700">${name}</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:3px">${formatDateAr(date)} ${time ? '· '+time : ''} ${branch ? '· '+branch : ''}</div>
-        ${empId ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">رقم الموظف: ${empId}</div>` : ''}
+    <div class="res-card" style="margin-bottom:0;border-radius:0;border-left:none;border-right:none;border-top:none"
+         onclick="showAdminResDetail(${i})">
+      <div class="res-card-head">
+        <div class="res-card-name">${name}</div>
+        <div class="res-badge ${statusClass}">${statusLabel}</div>
       </div>
-      <div class="res-badge ${cancelled ? 'cancelled' : 'confirmed'}">${cancelled ? 'ملغي' : 'مؤكد'}</div>
+      <div class="res-meta">
+        ${date   ? `<div class="res-meta-row"><span class="res-meta-icon">📅</span>${formatDate(date)}</div>` : ''}
+        ${time   ? `<div class="res-meta-row"><span class="res-meta-icon">🕐</span>${time}</div>` : ''}
+        ${branch ? `<div class="res-meta-row"><span class="res-meta-icon">🏢</span>${branch}</div>` : ''}
+        ${empId  ? `<div class="res-meta-row"><span class="res-meta-icon">🔢</span>${t('empIdLabel')}: ${empId}</div>` : ''}
+      </div>
+      <div style="margin-top:8px;text-align:left;font-size:12px;color:var(--blue);font-weight:700">${t('moreDetails')}</div>
     </div>
   `;
 }
 
-function adminShowAllReservations() {
-  toast('جارٍ تحميل الحجوزات...', 'info', 1500);
-  loadAdminDash();
+function showAdminResDetail(i) {
+  const r = state.adminReservations[i];
+  if (!r) return;
+  const cancelled = isCancelled(r);
+
+  const labelMap = {
+    name: t('fieldName'), email: t('fieldEmail'), date: t('fieldDate'), time: t('fieldTime'),
+    branch: t('fieldBranch'), region: t('fieldRegion'), employeeId: t('fieldEmpId'),
+    status: t('fieldStatus'), branch_code: t('fieldBranchCode'), reservation_id: 'ID'
+  };
+
+  const rows = Object.entries(r).map(([k, v]) => {
+    const lbl = labelMap[k] || k;
+    let val = v == null ? '—' : String(v);
+    if (k === 'date') val = formatDate(val);
+    if (k === 'status') val = cancelled ? t('cancelled') : t('upcoming');
+    return `<div class="summary-row"><span class="summary-label">${lbl}</span><span class="summary-value">${val}</span></div>`;
+  }).join('');
+
+  document.getElementById('resDetailBody').innerHTML = `
+    <div class="admin-section" style="margin-bottom:16px">
+      <div class="admin-section-head">📝 ${t('resDetail')}</div>
+      <div class="admin-section-body">${rows}</div>
+    </div>
+    <div style="height:20px"></div>
+  `;
+  showScreen('screenResDetail');
+
+  // Override back button to return to admin dash
+  document.querySelector('#screenResDetail .nav-back').onclick = () => showScreen('screenAdminDash');
 }
+
+function adminShowAllReservations() { loadAdminDash(); }
 
 function adminOpenFullDashboard() {
-  const url = GAS_URL + '?admin2=true';
-  window.open(url, '_blank');
+  window.open(GAS_URL + '?admin2=true', '_blank');
 }
 
 /* ================================================================
-   DATE FORMATTING
+   DATE FORMATTING (bilingual)
    ================================================================ */
-function formatDateAr(dateStr) {
+function formatDate(dateStr) {
   const m = String(dateStr || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!m) return dateStr;
-  const days = ['الاحد','الاثنين','الثلاثاء','الاربعاء','الخميس','الجمعة','السبت'];
+  const days = t('days');
   const dt = new Date(+m[1], +m[2]-1, +m[3]);
-  return `${days[dt.getDay()]} ${toAr(m[3])}/${toAr(m[2])}/${toAr(m[1])}`;
+  const dayName = days[dt.getDay()];
+  if (currentLang === 'ar') {
+    return `${dayName} ${toAr(m[3])}/${toAr(m[2])}/${toAr(m[1])}`;
+  }
+  return `${dayName}, ${m[3]}/${m[2]}/${m[1]}`;
 }
 
-/* ================================================================
-   NOTE: GAS doPost handler required on backend
-   Your GAS currently uses doGet. The PWA calls GAS via fetch POST.
-   Add this to your Code.gs:
+// Keep old name for compatibility
+function formatDateAr(d) { return formatDate(d); }
 
-   function doPost(e) {
-     try {
-       const body = JSON.parse(e.postData.contents || '{}');
-       const action = body.action;
-       delete body.action;
-       const result = this[action] ? this[action].call(this, ...Object.values(body)) : {ok:false,message:'Unknown action'};
-       return ContentService.createTextOutput(JSON.stringify(result))
-         .setMimeType(ContentService.MimeType.JSON);
-     } catch(err) {
-       return ContentService.createTextOutput(JSON.stringify({ok:false,message:err.message}))
-         .setMimeType(ContentService.MimeType.JSON);
-     }
-   }
 
-   See the README section below for full integration guide.
-   ================================================================ */
 
-/* ================================================================
-   INIT
-   ================================================================ */
 window.addEventListener('DOMContentLoaded', () => {
+  // Restore saved language preference
+  try {
+    const saved = localStorage.getItem('dfd_lang');
+    if (saved === 'en') { currentLang = 'en'; applyLang(); }
+  } catch(e) {}
+
   // Preload leaders silently
   ensureLeaders().catch(() => {});
 });
