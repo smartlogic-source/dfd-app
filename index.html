@@ -1673,21 +1673,6 @@ async function ensureLeaders() {
     if (Array.isArray(data)) state.leaders = data;
     else if (data.ok === false) throw new Error(data.message);
     else state.leaders = data;
-    try {
-      localStorage.setItem('dfd_leaders_cache', JSON.stringify(state.leaders));
-    } catch (e) {}
-  } catch (e) {
-    try {
-      const cached = localStorage.getItem('dfd_leaders_cache');
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length) {
-          state.leaders = parsed;
-          return state.leaders;
-        }
-      }
-    } catch (cacheErr) {}
-    throw e;
   } finally { hideLoader(); }
   return state.leaders;
 }
@@ -2369,6 +2354,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const saved = localStorage.getItem('dfd_lang');
     if (saved === 'en') { currentLang = 'en'; applyLang(); }
   } catch(e) {}
+
+  // Drop any legacy leaders cache so Android always fetches fresh data.
+  try { localStorage.removeItem('dfd_leaders_cache'); } catch(e) {}
 
   // Preload leaders silently
   ensureLeaders().catch(() => {});
