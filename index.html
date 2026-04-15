@@ -885,20 +885,21 @@
     /* --- Tablet / desktop: wider than 480px --- */
     @media (min-width: 481px) {
       body {
-        background: #dde8f5;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
+        background: var(--surface-2);
         min-height: 100vh;
         padding: 0;
       }
       #app {
-        max-width: 430px;
+        width: 100%;
+        max-width: none;
         min-height: 100vh;
-        box-shadow: var(--shadow-lg);
+        box-shadow: none;
       }
-      .bottom-cta { max-width: 430px; }
-      .toast-wrap { max-width: 410px; }
+      .status-fill,
+      .bottom-cta,
+      .toast-wrap {
+        max-width: none;
+      }
     }
 
     /* --- Tall phones: ensure content never gets cut off --- */
